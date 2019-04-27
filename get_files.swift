@@ -75,5 +75,5 @@ let u = URL(fileURLWithPath:p)
 
 time(repeating:10) {
     let filesFound = recursiveContentsOfDirectoryAtURL(u)
-    print("filesFound.count = \(filesFound.count)")
+    print(filesFound.count)
 }

@@ -10,7 +10,29 @@ The Python script `get_files.py` has a function extracted from the fastai librar
 
 The Swift script `get_files.swift` has an implementation based on the Foundation method `enumerator(at url: URL, includingPropertiesForKeys keys: [URLResourceKey]?, options mask: FileManager.DirectoryEnumerationOptions = [], errorHandler handler: ((URL, Error) -> Bool)? = nil) -> FileManager.DirectoryEnumerator?`. This is probably the method that one is supposed to use for a fast recursive enumeration. I have not checked other methods like `contentsOfDirectory(atPath:)`, which don't handle the recursion for you but might be faster.
 
-I pointed them both at the imagenette files (13,394 files), and this
+
+## How to run
+
+To run the Python:
+
+```
+python3 get_files.py /path/to/a/directory/
+```
+
+To run the Swift:
+
+```
+swiftc -O get_files.swift && ./get_files /path/to/a/directory/
+```
+
+
+## Findings
+
+I've been getting very inconsistent results, in tests pointing both scripts at the collection 13,394 imagenette files.
+
+In my most recent tests, the Python script is faster on both macOS and Linux. 
+
+In earlier tests, Python was faster on Linux and Swift was faster on the mac. In that earlier test, this
 is what I found:
 
 - On macOS, the Swift implementation is faster than the fastai Python one.
@@ -23,7 +45,8 @@ So what is going on here?
 
 My guess: maybe `scandir` is fast on Linux, and `fts_open` etc is fast on macOS. So to get a faster file enumeration in Swift on Linux, one should just wrap scandir instead of relying on Foundatin which wraps `fts_open`. Or we should update the Swift Foundation implementation to use scandir on Linux.
 
-### Logs measures
+## Logs 
+### measures
 
 Runs on Linux:
 
@@ -82,3 +105,50 @@ I need python3. I have been extracted from the fastai_docs library as of 2019-04
         0.13 real         0.10 user         0.02 sys
 ```
         
+### 2019-04-27T1155 measures
+
+```
+⋊> ~/w/f/f/PythonVersion on master ⨯ python3 get_files.py ../testData/imagenette-160/
+
+I will read the first command line argument, interpret it as a path to a directory,
+recursively search the names of all files and directories under that directory,
+and print the number of items found.
+
+I do this ten times. I have no external dependencies beyond Python3.
+
+I need python3. I have been extracted from the fastai_docs library as of 2019-04-26T2331.
+
+
+13394
+13394
+13394
+13394
+13394
+13394
+13394
+13394
+13394
+13394
+iterations: 10
+min time: 86.295175 ms
+⋊> ~/w/f/f/PythonVersion on master ⨯ swiftc -O get_files.swift && ./get_files ../testData/imagenette-160/
+        I will read the first command line argument, interpret it as a path to a directory,
+        recursively search the names of all files and directories under that directory,
+        and print the number of items found.
+
+        In fact, I will do this ten times and then print stats on how fast this happened.
+
+        I have no dependencies. I do all of this using the built-in libraries, Foundation and Dispatch
+13416
+13416
+13416
+13416
+13416
+13416
+13416
+13416
+13416
+13416
+13416
+average: 135.494526 ms,   min: 127.906133 ms,   max: 144.145931 ms
+```

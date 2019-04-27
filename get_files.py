@@ -1,5 +1,6 @@
 import sys
 import os
+import timeit
 from pathlib import Path
 from typing import *
 
@@ -41,14 +42,21 @@ I will read the first command line argument, interpret it as a path to a directo
 recursively search the names of all files and directories under that directory,
 and print the number of items found.
 
-I do this once.
+I do this ten times. I have no external dependencies beyond Python3.
 
 I need python3. I have been extracted from the fastai_docs library as of 2019-04-26T2331.
 
 """)
     arg1 = sys.argv[1]
     p = Path(arg1)
-    ps = get_files(p, recurse=True)
-    print(len(ps))
+    #statement ="get_files(\"{}\", recurse=True)".format(p)
+    statement ="count = len(get_files(\"{}\", recurse=True)); print(count)".format(p)
+    itercount = 10
+    timings = timeit.Timer(statement, setup="from __main__ import get_files").repeat(repeat=itercount,number=1)
+    print("iterations: {}".format(itercount))
+    print("min time: {:f} ms".format( min(timings) * 1000.0 ))
+
+
+
 
 
