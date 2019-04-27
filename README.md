@@ -1,6 +1,6 @@
 # Fast Swift file enumeration on Linux?
 
-This directory contains two files I used to measure the speed of recursively enumerating a large numbers of files on Linux, comparing Python3 versus Swift for TensorFlow.
+This directory contains two files I used to make an _extremely crude_ measure of the speed of recursively enumerating a large numbers of files on Linux, comparing Python3 versus Swift for TensorFlow.
 
 This for the FastAI library.
 
@@ -25,7 +25,7 @@ My guess: maybe `scandir` is fast on Linux, and `fts_open` etc is fast on macOS.
 
 ### Logs measures
 
-Runs on LInux:
+Runs on Linux:
 
 ```
 (swift-tensorflow) alexis@topobigbox:~/fetchFilesFaster/PythonVersion$ time python3 get_files.py ../testData/imagenette-160
