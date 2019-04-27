@@ -15,16 +15,15 @@ is what I found:
 
 - On macOS, the Swift implementation is faster than the fastai Python one.
 - On Linux, the fastai Python one is faster than the Swift one.
-- The Linux Swift implementation is based on `fts_open` API [src](https://github.com/apple/swift-corelibs-foundation/blob/9678f2d4dc914355108c09b3732da8bcce647c3b/Foundation/FileManager%2BPOSIX.swift). This seems to be a piece of BSD-originated API which is also available on Linux.
-- The Python implementation's speed:
-    - is coming from Python's `os.walk` being fast, and `os.walk` is based on scandir. [src](https://github.com/python/cpython/blob/3.7/Lib/os.py)
+- The Linux Swift implementation is based on `fts_open` API [source code](https://github.com/apple/swift-corelibs-foundation/blob/9678f2d4dc914355108c09b3732da8bcce647c3b/Foundation/FileManager%2BPOSIX.swift). This seems to be a piece of BSD-originated API which is also available on Linux.
+- The Python implementation is due to `os.walk` being fast, which is based on `scandir`. [source code](https://github.com/python/cpython/blob/3.7/Lib/os.py)
 - Also, in the fastai_docs version of `fetchFiles` (not included here), which uses mxcl's Path library, and which is not included here, the  `Path.Path()` initializer adds significant overhead (~33%).
 
 So what is going on here?
 
-My guess: maybe `scandir` is fast on Linux, and `fts_open` etc is fast on macOS. So to get a faster file enumeration in Swift on Linux, we should wrap scandir instead of relying on Foundatin which wraps `fts_open`. Or we should update the Swift Foundation implementation to use scandir on Linux.
+My guess: maybe `scandir` is fast on Linux, and `fts_open` etc is fast on macOS. So to get a faster file enumeration in Swift on Linux, one should just wrap scandir instead of relying on Foundatin which wraps `fts_open`. Or we should update the Swift Foundation implementation to use scandir on Linux.
 
-### Logs  measures
+### Logs measures
 
 Runs on LInux:
 
