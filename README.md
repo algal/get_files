@@ -2,7 +2,7 @@
 
 This directory contains two files I used to make an _extremely crude_ measure of the speed of recursively enumerating a large numbers of files on Linux, comparing Python3 versus Swift for TensorFlow.
 
-This for the FastAI library.
+This [for the FastAI library](https://forums.fast.ai/t/fast-file-enumeration-in-swift/44709).
 
 Both scripts here take a single command line argument, which should be a directory path, and then count all files under that path. The swift script does this ten times and times itself.
 
