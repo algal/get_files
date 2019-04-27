@@ -24,18 +24,6 @@ public func time(repeating: Int = 1, _ f: () -> ())
           "max: \(times.reduce(times[0], max)) ms")
 }
 
-// public func fetchFiles(path: Path, recurse: Bool = false, extensions: [String]? = nil) -> [Path] {
-//     var res: [Path] = []
-//     for p in try! path.ls(){
-//         if p.kind == .directory && recurse { 
-//             res += fetchFiles(path: p.path, recurse: recurse, extensions: extensions)
-//         } else if extensions == nil || extensions!.contains(p.path.extension.lowercased()) {
-//             res.append(p.path)
-//         }
-//     }
-//     return res
-// }
-
 public extension FileManager {
   /// Returns true if file exists and is a directory
   func fileExistsAndIsDirectory(_ file:URL) -> Bool {
@@ -68,28 +56,24 @@ public func recursiveContentsOfDirectoryAtURL(_ directoryURL:URL) -> [URL]
     return []
   }
 
-  var result:[URL] = []
-  for  p in ee {
-      result.append(p as! URL)
-  }
-//  let result = ee.allObjects as! [URL]
-  
+  let result = ee.allObjects as! [URL]
   return result
 }
 
+print("""
+        I will read the first command line argument, interpret it as a path to a directory,
+        recursively search the names of all files and directories under that directory,
+        and print the number of items found.
 
+        In fact, I will do this ten times and then print stats on how fast this happened.
 
-print("Hello, world!")
-
-// time(repeating:10) {
-//     let images = fetchFiles(path:datapath,recurse:true,extensions:["jpeg","jpg"])
-//     print("images.count = \(images.count)")
-// }
+        I have no dependencies. I do all of this using the built-in libraries, Foundation and Dispatch
+""")
 
 let p:String = CommandLine.arguments[1]
-let u = URL.init(fileURLWithPath:p)
+let u = URL(fileURLWithPath:p)
 
 time(repeating:10) {
-    let images = recursiveContentsOfDirectoryAtURL(u)
-    print("images.count = \(images.count)")
+    let filesFound = recursiveContentsOfDirectoryAtURL(u)
+    print("filesFound.count = \(filesFound.count)")
 }
